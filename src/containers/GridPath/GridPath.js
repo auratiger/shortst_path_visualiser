@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import CssClasses from "./GridPath.module.css";
-
+import {dijstraAlgorithm} from '../../algorithms/dijkstraAlgorithm';
 import Node from './Node/Node';
 
 const START_NODE_ROW = 0;
@@ -13,8 +13,8 @@ class GridPath extends Component{
     constructor(){
         super()
     
-        let rows = 25;
-        let cols = 60;
+        let rows = 27;
+        let cols = 65;
     
         let matrix = [];
         for(let row = 0; row < rows; row++){
@@ -22,8 +22,13 @@ class GridPath extends Component{
           for(let col = 0; col < cols; col++){
 
             let id = "" + (row < 10 ? '0'+row : row) + (col < 9 ? '0'+col : col);  
+            let distance = Infinity;
 
-            let node = new Node(id);
+            if(START_NODE_ROW === row && START_NODE_COL === col){
+              distance = 0;
+            }
+
+            let node = new Node(id, distance);
 
             matrix[row].push(node)
           }
@@ -79,16 +84,27 @@ class GridPath extends Component{
         })
       }
 
-      dijkstraAlgorithm (){
-
-      }
-
-    
       render(){     
         
         let key = 0;
         let grid = this.state.matrix.map(row => {
           let cols = row.map(col => {
+
+            
+            let element = () => {
+              let r = parseInt(col.id.substring(0, 2));
+              let c = parseInt(col.id.substring(2));              
+
+              if(START_NODE_ROW === r && START_NODE_COL === c){
+                return(
+                  <div className={CssClasses.start} id="element"></div>
+                )
+              }else if(END_NODE_ROW === r && END_NODE_COL === c){
+                return(
+                  <div className={CssClasses.end} id="element"></div>
+                )
+              }
+            }
         
             return(
               <div id={col.id} 
@@ -98,6 +114,7 @@ class GridPath extends Component{
                    onMouseDown={this.onClickHandler}
                    onMouseOver={this.onMouseHover}
                    onMouseUp={this.onMouseRelease}>
+                     {element()}
               </div>
             )
           })
