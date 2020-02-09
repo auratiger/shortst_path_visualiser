@@ -1,1 +1,0 @@
-# shortst_path_visualiser
