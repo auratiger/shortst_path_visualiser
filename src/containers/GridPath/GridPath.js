@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import CssClasses from "./GridPath.module.css";
-import {dijstraAlgorithm} from '../../algorithms/dijkstraAlgorithm';
+import {dijstraAlgorithm} from '../../algorithms/dijkstra';
 import Node from './Node/Node';
 
 const START_NODE_ROW = 0;
@@ -37,6 +37,8 @@ class GridPath extends Component{
         this.state = {
           mouseDown: false,
           matrix: matrix,
+          rows: rows,
+          cols: cols,
         }
         
         this.onMouseHover = this.onMouseHover.bind(this);
@@ -85,11 +87,13 @@ class GridPath extends Component{
       }
 
       render(){     
+        let nodeOne = [START_NODE_ROW, START_NODE_COL];
+        let nodeTwo = [END_NODE_ROW, END_NODE_COL];
+        console.log(dijstraAlgorithm(this.state.matrix, nodeOne, nodeTwo).then());        
         
         let key = 0;
         let grid = this.state.matrix.map(row => {
           let cols = row.map(col => {
-
             
             let element = () => {
               let r = parseInt(col.id.substring(0, 2));
