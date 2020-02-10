@@ -3,8 +3,8 @@ import CssClasses from "./GridPath.module.css";
 import {dijstraAlgorithm} from '../../algorithms/dijkstra';
 import Node from './Node/Node';
 
-const START_NODE_ROW = 0;
-const START_NODE_COL = 0;
+const START_NODE_ROW = 10;
+const START_NODE_COL = 10;
 const END_NODE_ROW = 20;
 const END_NODE_COL = 20;
 
@@ -21,14 +21,13 @@ class GridPath extends Component{
           matrix.push([]);
           for(let col = 0; col < cols; col++){
 
-            let id = "" + (row < 10 ? '0'+row : row) + (col < 9 ? '0'+col : col);  
             let distance = Infinity;
 
             if(START_NODE_ROW === row && START_NODE_COL === col){
               distance = 0;
             }
 
-            let node = new Node(id, distance);
+            let node = new Node(row, col, distance);
 
             matrix[row].push(node)
           }
@@ -41,9 +40,24 @@ class GridPath extends Component{
           cols: cols,
         }
         
+        this.matrixRerender = this.matrixRerender.bind(this);
         this.onMouseHover = this.onMouseHover.bind(this);
         this.onMouseRelease = this.onMouseRelease.bind(this);
         this.onClickHandler = this.onClickHandler.bind(this);
+      }
+
+      matrixRerender(matrix) {
+        this.setState({
+          ...this.state,
+          matrix: matrix,
+        })
+      }
+
+      runDijcstra = () => {
+        let startNode = this.state.matrix[START_NODE_ROW][START_NODE_COL];
+        let endNode = this.state.matrix[END_NODE_ROW][END_NODE_COL];
+
+        console.log(dijstraAlgorithm(this.state.matrix, startNode, endNode, this.matrixRerender).then()); 
       }
 
       onClickHandler(event) {
@@ -86,24 +100,21 @@ class GridPath extends Component{
         })
       }
 
-      render(){     
-        let nodeOne = [START_NODE_ROW, START_NODE_COL];
-        let nodeTwo = [END_NODE_ROW, END_NODE_COL];
-        console.log(dijstraAlgorithm(this.state.matrix, nodeOne, nodeTwo).then());        
+      render(){            
         
         let key = 0;
         let grid = this.state.matrix.map(row => {
-          let cols = row.map(col => {
+          let cols = row.map(node => {
             
             let element = () => {
-              let r = parseInt(col.id.substring(0, 2));
-              let c = parseInt(col.id.substring(2));              
+              // let r = parseInt(col.id.substring(0, 2));
+              // let c = parseInt(col.id.substring(2));              
 
-              if(START_NODE_ROW === r && START_NODE_COL === c){
+              if(START_NODE_ROW === node.row && START_NODE_COL === node.col){
                 return(
                   <div className={CssClasses.start} id="element"></div>
                 )
-              }else if(END_NODE_ROW === r && END_NODE_COL === c){
+              }else if(END_NODE_ROW === node.row && END_NODE_COL === node.col){
                 return(
                   <div className={CssClasses.end} id="element"></div>
                 )
@@ -111,10 +122,10 @@ class GridPath extends Component{
             }
         
             return(
-              <div id={col.id} 
-                   key={col.id} 
+              <div id={node.id} 
+                   key={node.id} 
                    className={CssClasses.item}
-                   style={col.style} 
+                   style={node.style} 
                    onMouseDown={this.onClickHandler}
                    onMouseOver={this.onMouseHover}
                    onMouseUp={this.onMouseRelease}>
@@ -133,6 +144,7 @@ class GridPath extends Component{
         return (
           <div className={CssClasses.center}>
             <div className={CssClasses.container}>
+              <button onClick={this.runDijcstra}>run</button>
               {grid}
             </div>    
           </div>

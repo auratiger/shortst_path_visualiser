@@ -1,7 +1,10 @@
 class Node{
-    constructor(id, distance){
-        this.id = id;
+    constructor(row, col, distance){
+        this.id = "" + (row < 10 ? '0'+row : row) + (col < 9 ? '0'+col : col);  
+        this.row = row;
+        this.col = col;
         this.visited = false;
+        this.checked = false;
         this.wall = false;
         this.distance = distance;
         this.previusNode = null;
