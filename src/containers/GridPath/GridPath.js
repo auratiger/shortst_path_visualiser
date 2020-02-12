@@ -6,7 +6,7 @@ import Node from './Node/Node';
 const START_NODE_ROW = 10;
 const START_NODE_COL = 10;
 const END_NODE_ROW = 20;
-const END_NODE_COL = 20;
+const END_NODE_COL = 64;
 
 class GridPath extends Component{
 
@@ -26,8 +26,15 @@ class GridPath extends Component{
             if(START_NODE_ROW === row && START_NODE_COL === col){
               distance = 0;
             }
-
+            
             let node = new Node(row, col, distance);
+            
+
+            // remove this later !!!
+            if(START_NODE_ROW === row && START_NODE_COL+2 === col){
+              node.pathDistance = 10;              
+            }
+            // 
 
             matrix[row].push(node)
           }
@@ -53,34 +60,38 @@ class GridPath extends Component{
         })
       }
 
+      resetMatrix = () => {
+
+        for(let row = 0; row < this.state.rows; row++){
+          for(let col = 0; col < this.state.cols; col++){
+            let node = this.state.matrix[row][col];
+
+            let tentDistance = Infinity;
+
+            if(START_NODE_ROW === row && START_NODE_COL === col){
+              tentDistance = 0;
+            }
+
+            node.wall = false;
+            node.tentDistance = tentDistance;
+            node.pathDistance = 1;
+            node.previusNode = null;
+            node.style = {
+                backgroundColor: '000',
+            };
+          }
+        }
+      }
+
       runDijcstra = () => {
+
         let startNode = this.state.matrix[START_NODE_ROW][START_NODE_COL];
         let endNode = this.state.matrix[END_NODE_ROW][END_NODE_COL];
 
         console.log(dijstraAlgorithm(this.state.matrix, startNode, endNode, this.matrixRerender).then()); 
       }
 
-      onClickHandler(event) {
-        event.preventDefault();
-        this.setState({
-          ...this.state,
-          mouseDown: true,
-        })
-      }
-
-      onMouseRelease(event){
-        this.setState({
-          ...this.state,
-          mouseDown: false,
-        })
-      }
-
-      onMouseHover(event){
-        if(!this.state.mouseDown){
-          return
-        }
-
-        let id = event.target.id;
+      colorChangeHandler = (id) => {
         if(id === 'element'){
           return;
         }
@@ -100,15 +111,39 @@ class GridPath extends Component{
         })
       }
 
+      onClickHandler(event) {
+        event.preventDefault();
+
+        this.colorChangeHandler(event.target.id);
+
+        this.setState({
+          ...this.state,
+          mouseDown: true,
+        })
+      }
+
+      onMouseRelease(event){
+        this.setState({
+          ...this.state,
+          mouseDown: false,
+        })
+      }
+
+      onMouseHover(event){
+        if(!this.state.mouseDown){
+          return
+        }
+
+        this.colorChangeHandler(event.target.id);        
+      }
+
       render(){            
         
         let key = 0;
         let grid = this.state.matrix.map(row => {
           let cols = row.map(node => {
             
-            let element = () => {
-              // let r = parseInt(col.id.substring(0, 2));
-              // let c = parseInt(col.id.substring(2));              
+            let element = () => {           
 
               if(START_NODE_ROW === node.row && START_NODE_COL === node.col){
                 return(
