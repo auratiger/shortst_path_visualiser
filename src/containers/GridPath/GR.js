@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from 'react';
+import Draggable from 'react-draggable';
 import {dijstraAlgorithm} from '../../algorithms/dijkstra';
 import {generateMaze} from '../../algorithms/mazeGenerator';
 import Node from '../Node/Node';
@@ -28,13 +29,14 @@ const GridPath = () => {
           matrix.push([]);
           for(let col = 0; col < COLS; col++){
 
-            let tentDistance = Infinity;
-
-            if(START_NODE_ROW === row && START_NODE_COL === col){
-              tentDistance = 0;
-            }
+            let node = new Node(row, col);
             
-            let node = new Node(row, col, tentDistance);
+            if(START_NODE_ROW === row && START_NODE_COL === col){
+              node.tentDistance = 0
+              node.isStart = true;
+            }else if(END_NODE_ROW === row && END_NODE_COL === col){
+              node.isEnd = true;
+            }
 
             matrix[row].push(node)
           }
@@ -48,8 +50,7 @@ const GridPath = () => {
         for(let row = 0; row < ROWS; row++){
           for(let col = 0; col < COLS; col++){
             
-            if((START_NODE_ROW === row && START_NODE_COL === col) || 
-                END_NODE_ROW === row && END_NODE_COL === col){
+            if(board[row][col].isStart){
               continue;
             }
 
@@ -69,9 +70,7 @@ const GridPath = () => {
     const runDijcstra = () => {
         // let startNode = this.state.matrix[START_NODE_ROW][START_NODE_COL];
         
-        let endNode = board[END_NODE_ROW][END_NODE_COL];
-
-        dijstraAlgorithm(board, endNode).then(setRerender(!rerender)); 
+        dijstraAlgorithm(board).then(setRerender(!rerender)); 
       }
 
     const runMaze = () => {
@@ -120,11 +119,11 @@ const GridPath = () => {
         
         let element = () => {           
 
-          if(START_NODE_ROW === node.row && START_NODE_COL === node.col){
+          if(node.isStart){
             return(
               <div className={CssClasses.start} id="element"></div>
             )
-          }else if(END_NODE_ROW === node.row && END_NODE_COL === node.col){
+          }else if(node.isEnd){
             return(
               <div className={CssClasses.end} id="element"></div>
             )
@@ -155,6 +154,11 @@ const GridPath = () => {
       <div className={CssClasses.center}>
 
         <div className={CssClasses.con}>
+          <Draggable>
+            <div>
+              <h1>Hello</h1>
+            </div>
+          </Draggable>
           <ButtonGroup>
             <Button onClick={runDijcstra}>run</Button>
             <Button onClick={resetBoard}>clean</Button>

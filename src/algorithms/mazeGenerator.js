@@ -43,9 +43,9 @@ function generateMazeEdges(matrix){
 
 function divide(matrix, x, y, width, height, orientetion, e){
 
-    if(e === 0){
-        return;
-    }
+    // if(e === 0){
+    //     return;
+    // }
 
     if(width < 2 || height < 2){
         return;
@@ -58,7 +58,7 @@ function divide(matrix, x, y, width, height, orientetion, e){
     let dy = horizontal ? 0 : 1;
 
     // how long will the wall be?
-    let length = horizontal ? width : height;
+    let length = horizontal ? width-1 : height-1;
 
     let wx, wy;
     
@@ -67,45 +67,45 @@ function divide(matrix, x, y, width, height, orientetion, e){
     wy = y + (horizontal ? Math.round((height - 2) / 2) : 0);
 
     let startPointNeibor = [wx - dx, wy - dy];
-    let endPointNeibor = [wx + (dx * length), wy + (dy * length)];
-
-    console.log(startPointNeibor);
-    console.log(endPointNeibor);
+    let endPointNeibor = [wx + (dx * length+dx), wy + (dy * length+dy)];
     
-
+    // where will the passage through the wall exist?        
     let px, py;
 
-    if(!matrix[startPointNeibor[0]][startPointNeibor[1]].wall){
-        console.log(1);
-        
+    if(!matrix[startPointNeibor[1]][startPointNeibor[0]].wall){        
         px = wx;
-        py = wy;
-    }else if(!matrix[endPointNeibor[0]][endPointNeibor[1]].wall){
-        console.log(2);
-        
-        px = wx + (dx * (length - 1));
-        py = wy + (dy * (length - 1));
-    }else{
-        // where will the passage through the wall exist?
-        console.log(3);
-        
+        py = wy;        
+    }else if(!matrix[endPointNeibor[1]][endPointNeibor[0]].wall){        
+        px = wx + (dx * (length));
+        py = wy + (dy * (length));
+    }else{        
         px = wx + (horizontal ? Math.round(Math.random() * (width - 2)) : 0);
         py = wy + (horizontal ? 0 : Math.round(Math.random() * (height - 2)));
-    }
+    }    
     
-    for(let i = 0; i < length; i++){
+    for(let i = 0; i <= length; i++){
+        let node = matrix[wy][wx];
+
+        if(node.isStart){
+            node.isStart = false;
+            matrix[wy+1][wx+1] = true;
+        }else if(node.isEnd){
+            node.isEnd = false;
+            matrix[wy+1][wx+1] = true;
+        }
+
         if(wx !== px || wy !== py){
-            matrix[wy][wx].style = {
+            node.style = {
                 backgroundColor: 'black',
             };
-            matrix[wy][wx].wall = true;
+            node.wall = true;
         }
         wx += dx;
         wy += dy;
     }
 
     let [nx, ny] = [x, y];
-    let [w, h] = horizontal ? [width, wy-y+1] : [wx-x+1, height];
+    let [w, h] = horizontal ? [width, wy-y] : [wx-x, height];
 
     divide(matrix, nx, ny, w, h, chooseOrientetion(w, h), e - 1);
 
@@ -113,8 +113,6 @@ function divide(matrix, x, y, width, height, orientetion, e){
     [w, h] = horizontal ? [width, y+height-wy-1] : [x+width-wx-1, height];
 
     divide(matrix, nx, ny, w, h, chooseOrientetion(w, h), e - 1);
-
-
 }
 
 function chooseOrientetion(width, height){
