@@ -1,5 +1,5 @@
-import Queue from '../dataStructures/Queue'
-
+// import Queue from '../dataStructures/Queue'
+// 
 // export async function dijstraAlgorithm(matrix, startNode, endNode, rerender){
     
 //     let currNode = null;
@@ -54,48 +54,54 @@ import Queue from '../dataStructures/Queue'
 //     rerender(matrix);
 // }
 
-export async function dijstraAlgorithm(matrix, startNode, endNode, rerender){
+export function dijstraAlgorithm(matrix, endNode){
 
-    let grid = [];
-
-    matrix.map(row => {
-        row.map(col => {
-            grid.push(col);
-        })
-    })
-
-    while(grid.length != 0){
-        const [currNode, i] = getNodeWithSmallestDistance(grid);       
-
-        if(currNode.row === endNode.row && currNode.col === endNode.col){                
-            break;
-        } 
-
-        grid.splice(i, 1);
-
-        let adjacentNodes =  getAdjacentNodes(matrix, currNode);  
-
-        adjacentNodes.forEach(node => {
-            let tentDistance = currNode.tentDistance + currNode.pathDistance;
-
-            if(tentDistance < node.tentDistance){
-                node.tentDistance = tentDistance;
-                node.previusNode = currNode;
-                node.style = {backgroundColor: "orange"};
-            }
-        })
-
-    }
-
-    let currNode = endNode;
-    while(currNode.previusNode !== null){
+    return new Promise((resolve, reject) => {
         
-        currNode.style = {backgroundColor: "blue"};
-        currNode = currNode.previusNode;
-    }
+        let grid = [];
 
-    rerender(matrix);
+        matrix.map(row => {
+            row.map(col => {
+                grid.push(col);
+            })
+        })
 
+        while(grid.length !== 0){
+            const [currNode, i] = getNodeWithSmallestDistance(grid);  
+            
+            if(currNode === null){
+                break;
+            }
+            
+            if(currNode.row === endNode.row && currNode.col === endNode.col){                
+                break;
+            } 
+
+            grid.splice(i, 1);
+
+            let adjacentNodes =  getAdjacentNodes(matrix, currNode);  
+
+            adjacentNodes.forEach(node => {
+                let tentDistance = currNode.tentDistance + currNode.pathDistance;
+
+                if(tentDistance < node.tentDistance && !node.wall){
+                    node.tentDistance = tentDistance;
+                    node.previusNode = currNode;
+                    node.style = {backgroundColor: "orange"};
+                }
+            })
+        }
+
+        let currNode = endNode;
+        while(currNode.previusNode !== null){
+            
+            currNode.style = {backgroundColor: "blue"};
+            currNode = currNode.previusNode;
+        }
+
+        resolve("yes");
+
+    });
 }
 
 function getNodeWithSmallestDistance(grid){
@@ -122,19 +128,15 @@ function getAdjacentNodes(matrix, curNode){
 
     for(let i = 0; i < 4; i++){
         if(curNode.row + dir_r[i] < 0 || curNode.col + dir_c[i] < 0 ||
-            curNode.row + dir_r[i] >= 27 || curNode.col + dir_c[i]  >= 65){
-                // TODO: the rows and cols limit values should not be hard coded
-                // they should change accourding to the screen size
+            curNode.row + dir_r[i] >= matrix.length || curNode.col + dir_c[i]  >= matrix[0].length){
             continue;
-        }
+        }   
         
         let node = matrix[curNode.row + dir_r[i]][curNode.col + dir_c[i]];  
         
         if(node.wall){
             continue;
         }
-
-        node.checked = true;
 
         adjacent.push(node);
     }

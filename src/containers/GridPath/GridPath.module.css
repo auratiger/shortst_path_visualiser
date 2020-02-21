@@ -1,5 +1,9 @@
 .container {
     display: grid;
+    padding-top: 0.5%;
+}
+
+.con {
     padding-top: 5%;
 }
 

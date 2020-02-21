@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Route, Switch} from 'react-router-dom'; 
 import CssClasses from "./App.module.css";
 import GridPath from './containers/GridPath/GridPath';
+import GR from './containers/GridPath/GR';
 import Layout from './components/Layout/Layout';
 
 class App extends Component {
@@ -9,7 +10,7 @@ class App extends Component {
   renderPage = () => {
     return(
       <Switch>
-        <Route path="/" component={GridPath}></Route>
+        <Route path="/" component={GR}></Route>
         <Route path="/grid-path" component={GridPath}></Route>
       </Switch>
     )
