@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import Draggable from 'react-draggable';
 import {dijstraAlgorithm} from '../../algorithms/dijkstra';
 import {generateMaze} from '../../algorithms/mazeGenerator';
+import Board from '../Board/Board';
 import Node from '../Node/Node';
 
 import CssClasses from "./GridPath.module.css";
@@ -9,83 +10,47 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { Button, ButtonGroup } from 'react-bootstrap';
 
-const START_NODE_ROW = 10;
-const START_NODE_COL = 10;
-const END_NODE_ROW = 20;
-const END_NODE_COL = 24;
-const ROWS = 30;
-const COLS = 30;
+const ROWS = 31;
+const COLS = 31;
 
 const GridPath = () => {
 
     const [rerender, setRerender] = useState(false);
-    const [board, setBoard] = useState([]);
-    const [mouseDown, setMouseDown] = useState(false);
+    const [board, setBoard] = useState(null);
+    const [mouseDown, setMouseDown] = useState(false);      
 
     useEffect(() => {
-
-        let matrix = [];
-        for(let row = 0; row < ROWS; row++){
-          matrix.push([]);
-          for(let col = 0; col < COLS; col++){
-
-            let node = new Node(row, col);
-            
-            if(START_NODE_ROW === row && START_NODE_COL === col){
-              node.tentDistance = 0
-              node.isStart = true;
-            }else if(END_NODE_ROW === row && END_NODE_COL === col){
-              node.isEnd = true;
-            }
-
-            matrix[row].push(node)
-          }
-        }
-        
-        setBoard(matrix);
+        setBoard(new Board(ROWS, COLS, setRerender));
     }, []);
 
     const resetBoard = () => {
-        
-        for(let row = 0; row < ROWS; row++){
-          for(let col = 0; col < COLS; col++){
-            
-            if(board[row][col].isStart){
-              continue;
-            }
+      board.resetBoard();
+      setRerender(!rerender);
+    }
 
-            board[row][col].tentDistance = Infinity;
-            board[row][col].pathDistance = 1;
-            board[row][col].wall = false;
-            board[row][col].previusNode = null;
-            board[row][col].style = {
-                backgroundColor: 'white',
-            };
-          }
-        }
-        
-        setRerender(!rerender);    
+    const PathRandomizer = () => {
+      board.resetPath()
+      board.randomizePathDistances();
+      setRerender(!rerender);
     }
 
     const runDijcstra = () => {
-        // let startNode = this.state.matrix[START_NODE_ROW][START_NODE_COL];
-        
-        dijstraAlgorithm(board).then(setRerender(!rerender)); 
+        dijstraAlgorithm(board.grid).then(setRerender(!rerender)); 
       }
 
     const runMaze = () => {
-        resetBoard();
-        generateMaze(board).then(setRerender(!rerender));
+        board.resetBoard();
+        setRerender(!rerender);
+        generateMaze(board.grid).then(setRerender(!rerender));
     }
         
     const colorChangeHandler = (id) => {
         
         let row = parseInt(id.substring(0, 2)); 
         let col = parseInt(id.substring(2));   
-
-        let newMatrix = board;        
-        newMatrix[row][col].wall = true;
-        newMatrix[row][col].style = {
+       
+        board.grid[row][col].wall = true;
+        board.grid[row][col].style = {
           backgroundColor: "red",
         }          
         
@@ -94,6 +59,10 @@ const GridPath = () => {
 
     const onClickHandler = (event) => {
         event.preventDefault();
+
+        if(event.target.id === "element"){
+          return;
+        }
 
         colorChangeHandler(event.target.id);
 
@@ -112,9 +81,9 @@ const GridPath = () => {
 
         colorChangeHandler(event.target.id);        
     }
-
+    
     let key = 0;    
-    let grid = board.map(row => {
+    let grid = board !== null ? board.grid.map(row => {
       let cols = row.map(node => {
         
         let element = () => {           
@@ -127,6 +96,8 @@ const GridPath = () => {
             return(
               <div className={CssClasses.end} id="element"></div>
             )
+          }else {
+            return node.pathDistance;
           }
         }
     
@@ -148,7 +119,7 @@ const GridPath = () => {
           {cols}
         </div>
       )
-    })    
+    }) : null;    
 
     return (
       <div className={CssClasses.center}>
@@ -163,6 +134,7 @@ const GridPath = () => {
             <Button onClick={runDijcstra}>run</Button>
             <Button onClick={resetBoard}>clean</Button>
             <Button onClick={runMaze}>maze</Button>
+            <Button onClick={PathRandomizer}>distance</Button>
           </ButtonGroup>
         </div>
 

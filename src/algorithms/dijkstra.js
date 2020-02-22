@@ -59,7 +59,7 @@ export function dijstraAlgorithm(matrix){
     return new Promise((resolve, reject) => {
         
         let grid = [];
-        let endNode = null;
+        let lastNode = null;
 
         matrix.map(row => {
             row.map(col => {
@@ -75,7 +75,7 @@ export function dijstraAlgorithm(matrix){
             }
             
             if(currNode.isEnd){   
-                endNode = currNode;             
+                lastNode = currNode;             
                 break;
             } 
 
@@ -94,11 +94,11 @@ export function dijstraAlgorithm(matrix){
             })
         }
 
-        let currNode = endNode;
-        while(currNode.previusNode !== null){
+
+        while(lastNode !== null && lastNode.previusNode !== null){
             
-            currNode.style = {backgroundColor: "blue"};
-            currNode = currNode.previusNode;
+            lastNode.style = {backgroundColor: "blue"};
+            lastNode = lastNode.previusNode;
         }        
         resolve("yes");
 

@@ -79,8 +79,8 @@ function divide(matrix, x, y, width, height, orientetion, e){
         px = wx + (dx * (length));
         py = wy + (dy * (length));
     }else{        
-        px = wx + (horizontal ? Math.round(Math.random() * (width - 2)) : 0);
-        py = wy + (horizontal ? 0 : Math.round(Math.random() * (height - 2)));
+        px = wx + (horizontal ? Math.ceil(Math.random() * (width - 2)) : 0);
+        py = wy + (horizontal ? 0 : Math.ceil(Math.random() * (height - 2)));
     }    
     
     for(let i = 0; i <= length; i++){
@@ -88,10 +88,14 @@ function divide(matrix, x, y, width, height, orientetion, e){
 
         if(node.isStart){
             node.isStart = false;
-            matrix[wy+1][wx+1] = true;
+            node.tentDistance = Infinity
+            matrix[wy+1][wx+1].isStart = true;
+            matrix[wy+1][wx+1].tentDistance = 0;
         }else if(node.isEnd){
             node.isEnd = false;
-            matrix[wy+1][wx+1] = true;
+            node.tentDistance = Infinity;
+            matrix[wy+1][wx+1].isEnd = true;
+            matrix[wy+1][wx+1].tentDistance = 0;
         }
 
         if(wx !== px || wy !== py){
