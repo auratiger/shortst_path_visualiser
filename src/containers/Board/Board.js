@@ -1,9 +1,9 @@
 import Node from '../Node/Node';
 
-const START_NODE_ROW = 1;
-const START_NODE_COL = 1;
+const START_NODE_ROW = 13;
+const START_NODE_COL = 13;
 const END_NODE_ROW = 20;
-const END_NODE_COL = 24;
+const END_NODE_COL = 20;
 
 class Board{
     constructor(rows, cols){
@@ -33,6 +33,8 @@ class Board{
     }
 
     resetBoard() {
+        this.visualization = [];
+
         for(let row = 0; row < this.rows; row++){
             for(let col = 0; col < this.cols; col++){
   
@@ -48,33 +50,33 @@ class Board{
               node.pathDistance = 1;
               node.wall = false;
               node.previusNode = null;
-              node.style = {
-                  backgroundColor: 'white',
-              };
+              document.getElementById(node.id).className = 'node' ;
             }
         }
     }
 
     resetPath() {
+      this.visualization = [];
+      
         for(let row = 0; row < this.rows; row++){
             for(let col = 0; col < this.cols; col++){
                 let node = this.grid[row][col];
 
                 let tentDistance = Infinity
-                let style = {backgroundColor: 'white'};
+                let cl = "";
               
                 if(node.isStart){
                   tentDistance = 0;
                 }
 
                 if(node.wall){
-                    style = {backgroundColor: 'black',};
+                    cl = "wall"
                 }
 
                 node.tentDistance = tentDistance;
                 node.previusNode = null;
-                node.style = style;
-            }
+                document.getElementById(node.id).className = `node ${cl}` ;
+              }
         }
     }
 

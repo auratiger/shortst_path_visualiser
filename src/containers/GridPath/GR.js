@@ -1,17 +1,19 @@
 import React, {useState, useEffect} from 'react';
-import Draggable from 'react-draggable';
+// import Draggable from 'react-draggable';
+
 import {dijstraAlgorithm} from '../../algorithms/dijkstra';
+import {aStar} from '../../algorithms/aStar';
 import {generateMaze} from '../../algorithms/mazeGenerator';
+import {visualizePath} from '../../algorithms/visualize';
+
 import Board from '../Board/Board';
-import Node from '../Node/Node';
 
-import CssClasses from "./GridPath.module.css";
+import './GridPath.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import { Button, ButtonGroup } from 'react-bootstrap';
 
-const ROWS = 31;
-const COLS = 31;
+const ROWS = 30;
+const COLS = 30;
 
 const GridPath = () => {
 
@@ -35,12 +37,16 @@ const GridPath = () => {
     }
 
     const runDijcstra = () => {
-        dijstraAlgorithm(board.grid).then(setRerender(!rerender)); 
+      aStar(board);
+
+        dijstraAlgorithm(board).then(() => {
+          visualizePath(board.visualization);
+          setRerender(!rerender);
+        }); 
       }
 
     const runMaze = () => {
         board.resetBoard();
-        setRerender(!rerender);
         generateMaze(board.grid).then(setRerender(!rerender));
     }
         
@@ -49,13 +55,9 @@ const GridPath = () => {
         let row = parseInt(id.substring(0, 2)); 
         let col = parseInt(id.substring(2));   
        
-        board.grid[row][col].wall = true;
-        board.grid[row][col].style = {
-          backgroundColor: "red",
-        }          
-        
-        setRerender(!rerender);
-    }
+        board.grid[row][col].wall = true;       
+        document.getElementById(board.grid[row][col].id).className = 'node wall' ;
+      }
 
     const onClickHandler = (event) => {
         event.preventDefault();
@@ -81,7 +83,7 @@ const GridPath = () => {
 
         colorChangeHandler(event.target.id);        
     }
-    
+        
     let key = 0;    
     let grid = board !== null ? board.grid.map(row => {
       let cols = row.map(node => {
@@ -90,11 +92,11 @@ const GridPath = () => {
 
           if(node.isStart){
             return(
-              <div className={CssClasses.start} id="element"></div>
+              <div className={"start"} id="element"></div>
             )
           }else if(node.isEnd){
             return(
-              <div className={CssClasses.end} id="element"></div>
+              <div className={"end"} id="element"></div>
             )
           }else {
             return node.pathDistance;
@@ -104,8 +106,7 @@ const GridPath = () => {
         return(
           <div id={node.id} 
                key={node.id} 
-               className={CssClasses.item}
-               style={node.style} 
+               className={"node"}
                onMouseDown={onClickHandler}
                onMouseOver={onMouseHover}
                onMouseUp={onMouseRelease}>
@@ -115,21 +116,16 @@ const GridPath = () => {
       })
 
       return(
-        <div key={key++} className={CssClasses.wrapper}>
+        <div key={key++} className={"wrapper"}>
           {cols}
         </div>
       )
     }) : null;    
 
     return (
-      <div className={CssClasses.center}>
+      <div className={"center"}>
 
-        <div className={CssClasses.con}>
-          <Draggable>
-            <div>
-              <h1>Hello</h1>
-            </div>
-          </Draggable>
+        <div className={"con"}>
           <ButtonGroup>
             <Button onClick={runDijcstra}>run</Button>
             <Button onClick={resetBoard}>clean</Button>
@@ -138,7 +134,7 @@ const GridPath = () => {
           </ButtonGroup>
         </div>
 
-        <div className={CssClasses.container}>
+        <div className={"container"}>
           {grid}
         </div>    
       </div>

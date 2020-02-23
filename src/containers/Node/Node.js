@@ -6,12 +6,10 @@ class Node{
         this.isStart = false;
         this.isEnd = false;
         this.wall = false;
+        this.fScore = Infinity;
         this.tentDistance = Infinity;
         this.pathDistance = 1;
         this.previusNode = null;
-        this.style = {
-            backgroundColor: '000',
-        };
     }
 }
 

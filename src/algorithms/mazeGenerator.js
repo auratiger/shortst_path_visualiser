@@ -6,9 +6,7 @@ export function generateMaze(matrix){
             let width = matrix[0].length;
             let height = matrix.length;
             let orientetion = chooseOrientetion(width, height);
-        
-            let newMatrix = matrix;
-        
+                
             generateMazeEdges(matrix);
         
             divide(matrix, 1, 1, width - 2, height - 2, orientetion, 3);
@@ -18,25 +16,17 @@ export function generateMaze(matrix){
 function generateMazeEdges(matrix){
 
     for(let i = 0; i < matrix.length; i++){
-        matrix[i][0].style = {
-            backgroundColor: 'black',
-        };
+        document.getElementById(matrix[i][0].id).className = 'node wall' ;
         matrix[i][0].wall = true;
 
-        matrix[i][matrix[0].length - 1].style = {
-            backgroundColor: 'black',
-        };
+        document.getElementById(matrix[i][matrix[0].length - 1].id).className = 'node wall' ;
         matrix[i][matrix[0].length - 1].wall = true;
     }
     for(let i = 0; i < matrix[0].length; i++){
-        matrix[0][i].style = {
-            backgroundColor: 'black',
-        };
+        document.getElementById(matrix[0][i].id).className = 'node wall' ;
         matrix[0][i].wall = true;
 
-        matrix[matrix.length - 1][i].style = {
-            backgroundColor: 'black',
-        };
+        document.getElementById(matrix[matrix.length - 1][i].id).className = 'node wall' ;
         matrix[matrix.length - 1][i].wall = true;
     }
 }
@@ -99,9 +89,7 @@ function divide(matrix, x, y, width, height, orientetion, e){
         }
 
         if(wx !== px || wy !== py){
-            node.style = {
-                backgroundColor: 'black',
-            };
+            document.getElementById(node.id).className = 'node wall' ;
             node.wall = true;
         }
         wx += dx;

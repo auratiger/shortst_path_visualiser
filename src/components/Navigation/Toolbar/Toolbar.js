@@ -1,12 +1,13 @@
 import React from 'react';
 import {NavLink} from 'react-router-dom';
-import classes from './Toolbar.module.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button, Nav, Navbar, Form, FormControl } from 'react-bootstrap';
 
 const toolbar = (props) => {
 
     return(
         <header>
-            <nav className={classes.Toolbar}>
+            {/* <nav className={classes.Toolbar}>
                 <ul className={classes.NavigationItems}>
                     <li className={classes.NavigationItem}>
                         Hello
@@ -26,7 +27,18 @@ const toolbar = (props) => {
                         <NavLink to={"/Profile"} exact>Hello</NavLink>
                     </li>
                 </ul>
-            </nav>
+            </nav> */}
+
+
+            <Navbar bg="dark" variant="dark">
+                <Navbar.Brand><NavLink to={"/"} exact>Home</NavLink></Navbar.Brand>
+                <Nav className="mr-auto justify-content-center">
+                <Nav.Item>
+                    <NavLink to={"/Profile"} exact>Hello</NavLink>
+                </Nav.Item>
+                </Nav>
+            </Navbar>
+
         </header>   
     );
 };

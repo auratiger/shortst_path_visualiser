@@ -1,65 +1,10 @@
-// import Queue from '../dataStructures/Queue'
-// 
-// export async function dijstraAlgorithm(matrix, startNode, endNode, rerender){
-    
-//     let currNode = null;
-//     let prevNode = null;
-//     let nearestNeibour = Infinity;
-//     let unvisitedNeigbors = new Queue();
-//     unvisitedNeigbors.enqueue(startNode);
 
-//     let i = 0;
-//     while(!unvisitedNeigbors.isEmpty()){     
-
-//             currNode = unvisitedNeigbors.dequeue();
-
-//             currNode.visited = true;
-//             currNode.style = {backgroundColor: "orange"};
-            
-//             if(currNode.row === endNode.row && currNode.col === endNode.col){                
-//                 break;
-//             }            
-
-//             let adjacentNodes =  getAdjacentNodes(matrix, currNode);  
-            
-//             adjacentNodes.forEach(node => {
-//                 let tentDistance = currNode.tentDistance + currNode.pathDistance;
-
-//                 if(tentDistance < node.tentDistance){
-//                     node.tentDistance = tentDistance;
-//                     node.previusNode = currNode;                    
-//                 }
-
-//                 if(node.visited){
-//                     return;
-//                 }
-
-//                 if(tentDistance < nearestNeibour){
-//                     nearestNeibour = tentDistance;
-//                     unvisitedNeigbors.toFront(node);
-//                 }else{
-//                     unvisitedNeigbors.enqueue(node);
-//                 }                
-//             })
-
-//             prevNode = currNode;                
-//     }
-
-//     while(currNode.previusNode !== null){
-        
-//         currNode.style = {backgroundColor: "blue"};
-//         currNode = currNode.previusNode;
-//     }
-
-//     rerender(matrix);
-// }
-
-export function dijstraAlgorithm(matrix){
+export function dijstraAlgorithm(board){
 
     return new Promise((resolve, reject) => {
         
+        let matrix = board.grid;
         let grid = [];
-        let lastNode = null;
 
         matrix.map(row => {
             row.map(col => {
@@ -69,39 +14,32 @@ export function dijstraAlgorithm(matrix){
 
         while(grid.length !== 0){
             const [currNode, i] = getNodeWithSmallestDistance(grid);  
+
             
             if(currNode === null){
                 break;
             }
-            
-            if(currNode.isEnd){   
-                lastNode = currNode;             
+                        
+            if(currNode.isEnd){  
+                board.visualization.push(currNode); 
                 break;
             } 
 
             grid.splice(i, 1);
 
-            let adjacentNodes =  getAdjacentNodes(matrix, currNode);  
+            let adjacentNodes = getAdjacentNodes(matrix, currNode);  
 
             adjacentNodes.forEach(node => {
                 let tentDistance = currNode.tentDistance + currNode.pathDistance;
 
                 if(tentDistance < node.tentDistance && !node.wall){
+                    board.visualization.push(node);
                     node.tentDistance = tentDistance;
                     node.previusNode = currNode;
-                    node.style = {backgroundColor: "orange"};
                 }
             })
         }
-
-
-        while(lastNode !== null && lastNode.previusNode !== null){
-            
-            lastNode.style = {backgroundColor: "blue"};
-            lastNode = lastNode.previusNode;
-        }        
         resolve("yes");
-
     });
 }
 
@@ -129,7 +67,7 @@ function getAdjacentNodes(matrix, curNode){
 
     for(let i = 0; i < 4; i++){
         if(curNode.row + dir_r[i] < 0 || curNode.col + dir_c[i] < 0 ||
-            curNode.row + dir_r[i] >= matrix.length || curNode.col + dir_c[i]  >= matrix[0].length){
+            curNode.row + dir_r[i] >= matrix.length || curNode.col + dir_c[i]  >= matrix[0].length){                                
             continue;
         }   
         
