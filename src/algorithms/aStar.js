@@ -8,12 +8,12 @@ function calculateDistance(start, end){
     let dirX = startCol < endCol ? 1 : -1;
     let distance = 0;
 
-    while(startRow != endRow){
+    while(startRow !== endRow){
         startRow += dirY;
         distance++;
     }
 
-    while(startCol != endCol){
+    while(startCol !== endCol){
         startCol += dirX;
         distance++;
     }

@@ -56,22 +56,11 @@ function divide(matrix, x, y, width, height, orientetion, e){
     wx = x + (horizontal ? 0 : Math.round((width - 2) / 2));
     wy = y + (horizontal ? Math.round((height - 2) / 2) : 0);
 
-    let startPointNeibor = [wx - dx, wy - dy];
-    let endPointNeibor = [wx + (dx * length+dx), wy + (dy * length+dy)];
-    
-    // where will the passage through the wall exist?        
-    let px, py;
+    let px = wx;
+    let py = wy;
 
-    if(!matrix[startPointNeibor[1]][startPointNeibor[0]].wall){        
-        px = wx;
-        py = wy;        
-    }else if(!matrix[endPointNeibor[1]][endPointNeibor[0]].wall){        
-        px = wx + (dx * (length));
-        py = wy + (dy * (length));
-    }else{        
-        px = wx + (horizontal ? Math.ceil(Math.random() * (width - 2)) : 0);
-        py = wy + (horizontal ? 0 : Math.ceil(Math.random() * (height - 2)));
-    }    
+    let startPointNeibor = [wx - dx, wy - dy];
+    let endPointNeibor = [wx + (dx * length+dx), wy + (dy * length+dy)]; 
     
     for(let i = 0; i <= length; i++){
         let node = matrix[wy][wx];
@@ -88,13 +77,45 @@ function divide(matrix, x, y, width, height, orientetion, e){
             matrix[wy+1][wx+1].tentDistance = 0;
         }
 
-        if(wx !== px || wy !== py){
+        // if(wx !== px || wy !== py){
             document.getElementById(node.id).className = 'node wall' ;
             node.wall = true;
-        }
+        // }
         wx += dx;
         wy += dy;
     }
+     
+    let cornerPassage = false;
+
+    // checks if there is a passage at the start of the line
+    // and set the start of the line as a passage
+    if(!matrix[startPointNeibor[1]][startPointNeibor[0]].wall){              
+        let node = matrix[py][px];
+        document.getElementById(node.id).className = 'node ' ;
+        node.wall = false;
+        cornerPassage = true;   
+    }
+
+    // checks if there is a passage at the end of the line
+    // and set the end of the line as a passage
+    if(!matrix[endPointNeibor[1]][endPointNeibor[0]].wall){        
+        px = px + (dx * (length));
+        py = py + (dy * (length));
+        let node = matrix[py][px];
+        document.getElementById(node.id).className = 'node ' ;
+        node.wall = false;
+        cornerPassage = true;
+    }
+
+    // where will the passage through the wall exist?        
+    if(!cornerPassage){        
+        px = px + (horizontal ? Math.ceil(Math.random() * (width - 2)) : 0);
+        py = py + (horizontal ? 0 : Math.ceil(Math.random() * (height - 2)));
+        
+        let node = matrix[py][px];
+        document.getElementById(node.id).className = 'node ' ;
+        node.wall = false;
+    }   
 
     let [nx, ny] = [x, y];
     let [w, h] = horizontal ? [width, wy-y] : [wx-x, height];

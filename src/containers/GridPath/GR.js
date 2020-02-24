@@ -37,7 +37,6 @@ const GridPath = () => {
     }
 
     const runDijcstra = () => {
-      aStar(board);
 
         dijstraAlgorithm(board).then(() => {
           visualizePath(board.visualization);
