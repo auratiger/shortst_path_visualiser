@@ -44,15 +44,15 @@ function getAdjacentNodes(matrix, curNode){
     return adjacent;
 }
 
-function getNodeWithSmallestDistance(grid){
+function getNodeWithShortestDistance(grid){
     let smallest = Infinity;
     let rNode = null;
     let index = 0;
     
     for(let i = 0; i < grid.length; i++){
         let node = grid[i];
-        if(node.tentDistance < smallest){
-            smallest = node.tentDistance;
+        if(node.fScore <= smallest){
+            smallest = node.fScore;
             rNode = node;
             index = i;
         }
@@ -63,16 +63,25 @@ function getNodeWithSmallestDistance(grid){
 
 export function aStar(board, startNode, endNode){
     return new Promise((resolve, reject) => {
-        
-            let openSet = [startNode];
-            let distanceFromStart = 0;
-            let distanceToEnd = 0;
-        
-            let totalDistance = 0;
-        
-            // while(openSet.length != 0){
 
-            // }
+            let openSet = [startNode];
+        
+            while(openSet.length != 0){
+
+                let [curNode, i] = getNodeWithShortestDistance(board.grid);
+                openSet.splice(i, 1); // removes the node at index i;
+
+                if(curNode.isEnd){
+                    console.log("end");
+                    break;
+                }
+
+                let adjacentNodes = getAdjacentNodes(board.grid, curNode);
+
+                adjacentNodes.forEach(node => {
+                    
+                })
+            }
 
             reject("N");
     })    

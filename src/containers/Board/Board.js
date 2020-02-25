@@ -1,6 +1,6 @@
 import Node from '../Node/Node';
 
-const START_NODE_ROW = 13;
+const START_NODE_ROW = 5;
 const START_NODE_COL = 13;
 const END_NODE_ROW = 20;
 const END_NODE_COL = 20;

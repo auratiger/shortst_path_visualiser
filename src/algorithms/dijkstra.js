@@ -3,6 +3,7 @@ export function dijstraAlgorithm(board){
 
     return new Promise((resolve, reject) => {
         
+        let reachedEnd = false;
         let matrix = board.grid;
         let grid = [];
 
@@ -21,11 +22,12 @@ export function dijstraAlgorithm(board){
             }
                         
             if(currNode.isEnd){  
+                reachedEnd = true;
                 board.visualization.push(currNode); 
                 break;
             } 
 
-            grid.splice(i, 1);
+            grid.splice(i, 1); // removes the node at index i;
 
             let adjacentNodes = getAdjacentNodes(matrix, currNode);  
 
@@ -39,7 +41,7 @@ export function dijstraAlgorithm(board){
                 }
             })
         }
-        resolve("yes");
+        resolve(reachedEnd);
     });
 }
 

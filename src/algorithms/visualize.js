@@ -1,6 +1,6 @@
 
 
-export function visualizePath(path){  
+export function visualizePath(path, reachedEnd){  
 
     for(let i = 0; i < path.length; i++){
         let node = path[i];
@@ -15,12 +15,14 @@ export function visualizePath(path){
 
             setTimeout(() => {
                 for(let e = 0; e < backtrackPath.length; e++){
-                    setTimeout(() => {
-
-                        // document.getElementById(backtrackPath[e].id).style.backgroundColor = "blue";
-                        document.getElementById(backtrackPath[e].id).className = 'node node-shortest-path' ;
-                        
-                    }, 50 * e);
+                    if(reachedEnd){
+                        setTimeout(() => {
+    
+                            // document.getElementById(backtrackPath[e].id).style.backgroundColor = "blue";
+                            document.getElementById(backtrackPath[e].id).className = 'node node-shortest-path' ;
+                            
+                        }, 50 * e);
+                    }
                 }  
             }, 10 * i);
             return;

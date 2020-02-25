@@ -38,8 +38,8 @@ const GridPath = () => {
 
     const runDijcstra = () => {
 
-        dijstraAlgorithm(board).then(() => {
-          visualizePath(board.visualization);
+        dijstraAlgorithm(board).then((reachedEnd) => {
+          visualizePath(board.visualization, reachedEnd);
           setRerender(!rerender);
         }); 
       }
