@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef, createRef} from 'react';
 // import Draggable from 'react-draggable';
 
 import {dijstraAlgorithm} from '../../algorithms/dijkstra';
@@ -19,9 +19,14 @@ const GridPath = () => {
 
     const [rerender, setRerender] = useState(false);
     const [board, setBoard] = useState(null);
-    const [mouseDown, setMouseDown] = useState(false);      
+    const [mouseDown, setMouseDown] = useState(false); 
+    const [elRefs, setElRefs] = React.useState([]);
 
     useEffect(() => {
+        setElRefs(elRefs => (
+          Array(ROWS*COLS).fill().map((_, i) => elRefs[i] || createRef())
+        ));
+
         setBoard(new Board(ROWS, COLS, setRerender));
     }, []);
 
@@ -44,7 +49,7 @@ const GridPath = () => {
         }); 
       }
 
-    const runMaze = () => {
+    const runMaze = () => {  
         board.resetBoard();
         generateMaze(board.grid).then(setRerender(!rerender));
     }
@@ -55,7 +60,9 @@ const GridPath = () => {
         let col = parseInt(id.substring(2));   
        
         board.grid[row][col].wall = true;       
-        document.getElementById(board.grid[row][col].id).className = 'node wall' ;
+        // document.getElementById(board.grid[row][col].id).className = 'node wall' ;
+        let index = row * COLS + col;
+        elRefs[index].current.className = 'node wall';
       }
 
     const onClickHandler = (event) => {
@@ -80,13 +87,17 @@ const GridPath = () => {
           return
         }
 
+        if(event.target.id === "element"){
+          return;
+        }
+
         colorChangeHandler(event.target.id);        
     }
         
-    let key = 0;    
+    let key = 0;  
+    let r = 0; 
     let grid = board !== null ? board.grid.map(row => {
       let cols = row.map(node => {
-        
         let element = () => {           
 
           if(node.isStart){
@@ -105,6 +116,7 @@ const GridPath = () => {
         return(
           <div id={node.id} 
                key={node.id} 
+               ref={elRefs[r++]}
                className={"node"}
                onMouseDown={onClickHandler}
                onMouseOver={onMouseHover}
