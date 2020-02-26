@@ -83,6 +83,7 @@ export function aStar(board, startNode, endNode){
                 })
             }
 
+            
             reject("N");
     })    
 }

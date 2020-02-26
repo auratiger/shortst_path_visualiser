@@ -17,10 +17,7 @@ export function visualizePath(path, reachedEnd){
                 for(let e = 0; e < backtrackPath.length; e++){
                     if(reachedEnd){
                         setTimeout(() => {
-    
-                            // document.getElementById(backtrackPath[e].id).style.backgroundColor = "blue";
-                            document.getElementById(backtrackPath[e].id).className = 'node node-shortest-path' ;
-                            
+                                document.getElementById(backtrackPath[e].id).className = 'node node-shortest-path';
                         }, 50 * e);
                     }
                 }  
@@ -28,11 +25,8 @@ export function visualizePath(path, reachedEnd){
             return;
         }
 
-        setTimeout(() => {
-            
-            // document.getElementById(node.id).style.backgroundColor = "orange";
-            document.getElementById(node.id).className = 'node node-visited';
-            
+        setTimeout(() => {            
+            document.getElementById(node.id).className = 'node node-visited'; 
         }, 10 * i);
     }
 }

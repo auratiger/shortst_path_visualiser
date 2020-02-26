@@ -10,7 +10,7 @@ import Board from '../Board/Board';
 
 import './GridPath.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Button, ButtonGroup } from 'react-bootstrap';
+import { Button, ButtonGroup, Card } from 'react-bootstrap';
 
 const ROWS = 30;
 const COLS = 30;
@@ -20,7 +20,11 @@ const GridPath = () => {
     const [rerender, setRerender] = useState(false);
     const [board, setBoard] = useState(null);
     const [mouseDown, setMouseDown] = useState(false); 
+<<<<<<< HEAD
     const [elRefs, setElRefs] = React.useState([]);
+=======
+    const [distance, setDistance] = useState(0);     
+>>>>>>> ae4caa8b1f25ddb70f1de766698ef0d70760142f
 
     useEffect(() => {
         setElRefs(elRefs => (
@@ -137,6 +141,7 @@ const GridPath = () => {
       <div className={"center"}>
 
         <div className={"con"}>
+          <Card.Text>{distance}</Card.Text>
           <ButtonGroup>
             <Button onClick={runDijcstra}>run</Button>
             <Button onClick={resetBoard}>clean</Button>
