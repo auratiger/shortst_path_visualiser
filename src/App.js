@@ -3,6 +3,7 @@ import {Route, Switch} from 'react-router-dom';
 import CssClasses from "./App.module.css";
 // import GridPath from './containers/GridPath/GridPath';
 import GR from './containers/GridPath/GR';
+import Maps from './containers/Maps/Maps';
 import Layout from './components/Layout/Layout';
 
 class App extends Component {
@@ -10,6 +11,7 @@ class App extends Component {
   renderPage = () => {
     return(
       <Switch>
+        <Route path="/Maps" component={Maps}></Route>
         <Route path="/" component={GR}></Route>
       </Switch>
     )
