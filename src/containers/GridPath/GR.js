@@ -12,19 +12,32 @@ import './GridPath.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, ButtonGroup, Card } from 'react-bootstrap';
 
-const ROWS = 30;
-const COLS = 30;
+// const ROWS = 35;
+// const COLS = 92;
+const ROWS = Math.floor(window.innerHeight / 34);
+const COLS = Math.floor(window.innerWidth / 26);
 
 const GridPath = () => {
 
     const [rerender, setRerender] = useState(false);
     const [board, setBoard] = useState(null);
     const [mouseDown, setMouseDown] = useState(false); 
-    const [distance, setDistance] = useState(0);     
+    const [distance, setDistance] = useState(0);    
+    const [screenWidth, setScreenWidth] = useState(0); 
+    const [screenHeight, setScreenHeight] = useState(0); 
 
     useEffect(() => {
-        setBoard(new Board(ROWS, COLS, setRerender));
+      updateScreenSize();
+      window.addEventListener('resize', updateScreenSize);
+      setBoard(new Board(ROWS, COLS, setRerender));
+
+        return () => {window.removeEventListener('resize', updateScreenSize)}
     }, []);
+
+    const updateScreenSize = () => {
+      setScreenWidth(window.innerWidth);
+      setScreenHeight(window.innerHeight);
+    }
 
     const resetBoard = () => {
       board.resetBoard();
@@ -41,9 +54,14 @@ const GridPath = () => {
 
         dijstraAlgorithm(board).then((reachedEnd) => {
           visualizePath(board.visualization, reachedEnd);
-          setRerender(!rerender);
         }); 
-      }
+    }
+
+    const runAStar = () => {
+      aStar(board).then((reachedEnd) => {
+        visualizePath(board.visualization, reachedEnd);
+      })
+    }
 
     const runMaze = () => {
         board.resetBoard();
@@ -126,9 +144,10 @@ const GridPath = () => {
       <div className={"center"}>
 
         <div className={"con"}>
-          <Card.Text>{distance}</Card.Text>
+          <Card.Text>{screenWidth + " " + screenHeight}</Card.Text>
           <ButtonGroup>
             <Button onClick={runDijcstra}>run</Button>
+            <Button onClick={runAStar}>aStar</Button>
             <Button onClick={resetBoard}>clean</Button>
             <Button onClick={runMaze}>maze</Button>
             <Button onClick={PathRandomizer}>distance</Button>

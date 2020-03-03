@@ -1,24 +1,7 @@
 
 // finds the distance from node "start" to node "end"
 function calculateDistance(start, end){
-    let [startRow, startCol] = [start.row, start.col];
-    let [endRow, endCol] = [end.row, end.col];
-
-    let dirY = startRow < endRow ? 1 : -1;
-    let dirX = startCol < endCol ? 1 : -1;
-    let distance = 0;
-
-    while(startRow !== endRow){
-        startRow += dirY;
-        distance++;
-    }
-
-    while(startCol !== endCol){
-        startCol += dirX;
-        distance++;
-    }
-
-    return distance;    
+    return (Math.abs(start.row - end.row) + Math.abs(start.col - end.col));    
 }
 
 function getAdjacentNodes(matrix, curNode){
@@ -48,6 +31,8 @@ function getNodeWithShortestDistance(grid){
     let smallest = Infinity;
     let rNode = null;
     let index = 0;
+    console.log(grid.length);
+    
     
     for(let i = 0; i < grid.length; i++){
         let node = grid[i];
@@ -55,35 +40,62 @@ function getNodeWithShortestDistance(grid){
             smallest = node.fScore;
             rNode = node;
             index = i;
-        }
+        }        
     }
 
     return [rNode, index];
 }
 
-export function aStar(board, startNode, endNode){
+export function aStar(board){
     return new Promise((resolve, reject) => {
+        let reachedEnd = false;
 
-            let openSet = [startNode];
+        let startNode = board.startNode;
+        let endNode = board.endNode;        
         
-            while(openSet.length != 0){
+        startNode.gScore = 0;
+        let openSet = [startNode];
+        let closedSet = [];
+    
+        while(openSet.length !== 0){
 
-                let [curNode, i] = getNodeWithShortestDistance(board.grid);
-                openSet.splice(i, 1); // removes the node at index i;
+            let [curNode, i] = getNodeWithShortestDistance(openSet);
+            openSet.splice(i, 1); // removes the node at index i;
 
-                if(curNode.isEnd){
-                    console.log("end");
-                    break;
-                }
-
-                let adjacentNodes = getAdjacentNodes(board.grid, curNode);
-
-                adjacentNodes.forEach(node => {
-                    
-                })
+            if(curNode.isEnd){
+                console.log("end");
+                reachedEnd = true;
+                board.visualization.push(curNode);
+                break;
             }
 
-            
-            reject("N");
+            let adjacentNodes = getAdjacentNodes(board.grid, curNode);
+
+            adjacentNodes.forEach(node => {
+                node.previusNode = curNode;
+
+                let g = curNode.gScore + curNode.pathDistance;
+                let h = calculateDistance(node, endNode);
+                let f = g + h;
+
+                let q = openSet.filter(el => el.id === node.id);
+                if(q.length !== 0 && q[0].fScore < f){
+                    return;
+                }
+
+                q = closedSet.filter(el => el.id === node.id);
+                if(q.length !== 0 && q[0].fScore < f){
+                    return;
+                }
+
+                node.fScore = f;
+                openSet.push(node);
+            })
+
+            board.visualization.push(curNode);
+            closedSet.push(curNode);
+        }
+
+        resolve(reachedEnd);
     })    
 }

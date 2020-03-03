@@ -6,6 +6,7 @@ class Node{
         this.isStart = false;
         this.isEnd = false;
         this.wall = false;
+        this.gScore = Infinity;
         this.fScore = Infinity;
         this.tentDistance = Infinity;
         this.pathDistance = 1;

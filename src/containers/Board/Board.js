@@ -2,8 +2,8 @@ import Node from '../Node/Node';
 
 const START_NODE_ROW = 5;
 const START_NODE_COL = 13;
-const END_NODE_ROW = 20;
-const END_NODE_COL = 20;
+const END_NODE_ROW = 5;
+const END_NODE_COL = 16;
 
 class Board{
     constructor(rows, cols){
@@ -12,6 +12,8 @@ class Board{
         this.cols = cols;
         this.visualization = [];
         this.grid = [];
+        this.startNode = null;
+        this.endNode = null;
 
         //generates the board
         for(let row = 0; row < rows; row++){
@@ -23,8 +25,10 @@ class Board{
               if(START_NODE_ROW === row && START_NODE_COL === col){
                 node.tentDistance = 0
                 node.isStart = true;
+                this.startNode = node;
               }else if(END_NODE_ROW === row && END_NODE_COL === col){
                 node.isEnd = true;
+                this.endNode = node;
               }
   
               this.grid[row].push(node)
