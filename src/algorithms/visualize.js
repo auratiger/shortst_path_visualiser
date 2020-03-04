@@ -1,17 +1,19 @@
 
 
-export function visualizePath(path, reachedEnd){  
-
+export function visualizePath(path, reachedEnd){      
+    
     for(let i = 0; i < path.length; i++){
         let node = path[i];
 
-        if(i === path.length-1){
+        if(i === path.length-1){            
             let backtrackPath = [];
 
-            while(node !== null && node.previusNode !== null){
+            while(node !== null && node.previusNode !== null){   
+                console.log(2);
+                             
                 backtrackPath.push(node);
                 node = node.previusNode;
-            }            
+            }   
 
             setTimeout(() => {
                 for(let e = 0; e < backtrackPath.length; e++){

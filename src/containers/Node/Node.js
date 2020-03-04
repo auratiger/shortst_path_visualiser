@@ -11,6 +11,7 @@ class Node{
         this.tentDistance = Infinity;
         this.pathDistance = 1;
         this.previusNode = null;
+        this.dir = 0;
     }
 }
 

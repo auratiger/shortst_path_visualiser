@@ -4,22 +4,28 @@ function calculateDistance(start, end){
     return (Math.abs(start.row - end.row) + Math.abs(start.col - end.col));    
 }
 
-function getAdjacentNodes(matrix, curNode){
+function getAdjacentNodes(matrix, curNode, closedSet){
     let adjacent = [];
-    let dir_r = [0, -1, 0, 1]; //
-    let dir_c = [1, 0, -1, 0]; // right, up, left, down    
+    let dir_r = [0, -1, 0, 1, 1, -1, 1, -1]; //
+    let dir_c = [1, 0, -1, 0, 1, -1, -1, 1]; // right, up, left, down    
 
-    for(let i = 0; i < 4; i++){
+    for(let i = 0; i < 8; i++){
         if(curNode.row + dir_r[i] < 0 || curNode.col + dir_c[i] < 0 ||
             curNode.row + dir_r[i] >= matrix.length || curNode.col + dir_c[i]  >= matrix[0].length){                                
             continue;
         }
         
-        let node = matrix[curNode.row + dir_r[i]][curNode.col + dir_c[i]];  
+        let node = matrix[curNode.row + dir_r[i]][curNode.col + dir_c[i]];
         
         if(node.wall){
             continue;
         }
+
+        if(closedSet.some(el => el.id === node.id)){
+            continue;
+        }
+
+        node.dir = i > 3 ? 1 : 0;
 
         adjacent.push(node);
     }
@@ -30,9 +36,7 @@ function getAdjacentNodes(matrix, curNode){
 function getNodeWithShortestDistance(grid){
     let smallest = Infinity;
     let rNode = null;
-    let index = 0;
-    console.log(grid.length);
-    
+    let index = 0;   
     
     for(let i = 0; i < grid.length; i++){
         let node = grid[i];
@@ -56,7 +60,7 @@ export function aStar(board){
         startNode.gScore = 0;
         let openSet = [startNode];
         let closedSet = [];
-    
+        
         while(openSet.length !== 0){
 
             let [curNode, i] = getNodeWithShortestDistance(openSet);
@@ -65,16 +69,21 @@ export function aStar(board){
             if(curNode.isEnd){
                 console.log("end");
                 reachedEnd = true;
-                board.visualization.push(curNode);
-                break;
+                board.visualization.push(curNode);                    
+                resolve(reachedEnd);            
+                return;
             }
 
-            let adjacentNodes = getAdjacentNodes(board.grid, curNode);
+            let adjacentNodes = getAdjacentNodes(board.grid, curNode, closedSet);
 
             adjacentNodes.forEach(node => {
-                node.previusNode = curNode;
+                node.previusNode = curNode;  
+                board.visualization.push(curNode);              
+            })
 
-                let g = curNode.gScore + curNode.pathDistance;
+            adjacentNodes.forEach(node => {
+
+                let g = curNode.gScore + curNode.dir === 0 ? curNode.pathDistance : curNode.pathDistance * 1.2;
                 let h = calculateDistance(node, endNode);
                 let f = g + h;
 
@@ -88,14 +97,12 @@ export function aStar(board){
                     return;
                 }
 
+                node.gScore = g;
                 node.fScore = f;
                 openSet.push(node);
             })
 
-            board.visualization.push(curNode);
             closedSet.push(curNode);
         }
-
-        resolve(reachedEnd);
     })    
 }
