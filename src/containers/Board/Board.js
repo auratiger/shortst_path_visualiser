@@ -15,12 +15,13 @@ class Board{
         this.startNode = null;
         this.endNode = null;
 
+        let index = 0;
         //generates the board
         for(let row = 0; row < rows; row++){
             this.grid.push([]);
             for(let col = 0; col < cols; col++){
   
-              let node = new Node(row, col);
+              let node = new Node(row, col, index++);
               
               if(START_NODE_ROW === row && START_NODE_COL === col){
                 node.tentDistance = 0
@@ -44,17 +45,14 @@ class Board{
   
               let node = this.grid[row][col];
   
-              let tentDistance = Infinity
-              
-              if(node.isStart){
-                tentDistance = 0;
-              }
+              let tentDistance = node.isStart ? 0 : Infinity;
+              let cl = node.isStart ? 'start' : node.isEnd ? 'end' : 'node';
   
               node.tentDistance = tentDistance;
               node.pathDistance = 1;
               node.wall = false;
               node.previusNode = null;
-              document.getElementById(node.id).className = 'node' ;
+              document.getElementById(node.id).className = cl;
             }
         }
     }

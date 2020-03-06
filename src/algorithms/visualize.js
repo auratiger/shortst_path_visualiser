@@ -1,6 +1,6 @@
 
 
-export function visualizePath(path, reachedEnd){      
+export function visualizePath(path, elRefs, reachedEnd){      
     
     for(let i = 0; i < path.length; i++){
         let node = path[i];
@@ -8,9 +8,7 @@ export function visualizePath(path, reachedEnd){
         if(i === path.length-1){            
             let backtrackPath = [];
 
-            while(node !== null && node.previusNode !== null){   
-                console.log(2);
-                             
+            while(node !== null && node.previusNode !== null){                                
                 backtrackPath.push(node);
                 node = node.previusNode;
             }   
@@ -19,7 +17,7 @@ export function visualizePath(path, reachedEnd){
                 for(let e = 0; e < backtrackPath.length; e++){
                     if(reachedEnd){
                         setTimeout(() => {
-                                document.getElementById(backtrackPath[e].id).className = 'node node-shortest-path';
+                            elRefs[backtrackPath[e].index].current.className = "node node-shortest-path"
                         }, 50 * e);
                     }
                 }  
@@ -28,7 +26,7 @@ export function visualizePath(path, reachedEnd){
         }
 
         setTimeout(() => {            
-            document.getElementById(node.id).className = 'node node-visited'; 
+            elRefs[node.index].current.className = 'node node-visited';
         }, 10 * i);
     }
 }

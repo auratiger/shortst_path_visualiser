@@ -1,7 +1,9 @@
 .container {
-    display: grid;
-    margin: 0 !important;
-    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    width: 100vw !important;
+    max-width: 100vw !important;
+
 }
 
 .con {
@@ -13,12 +15,11 @@
 .center {
     text-align: center;
     margin: auto;
-  }
+}
 
 .wrapper {
     display: flex;
-    grid-template-columns: 20px;
-    grid-gap: 0px;
+    flex-direction: row;
     background-color: #fff;
     color: #444;
 }
@@ -27,10 +28,7 @@
     color: #444;
     border: 1px solid rgb(26, 169, 252);
     background-color: white;
-    /* outline: 1px solid rgb(26, 169, 252); */
-    display: inline-block;
-    height: 26.09px;
-    width: 26.09px;
+    flex-grow: 1;
 }
 
 .wall {
@@ -38,26 +36,20 @@
 }
 
 .start {
-    margin: auto;
-    margin-top: 6%;
-    width: 80%;
-    height: 80%;
-    border: 1px solid black;
+    flex-grow: 1;
     border-radius: 100%;
+    border: 1px solid rgb(26, 169, 252);
+    color: green;
     background-color: green;
 }
 
 .end {
-    margin: auto;
-    margin-top: 6%;
-    width: 80%;
-    height: 80%;
-    border: 1px solid black;
+    flex-grow: 1;
     border-radius: 100%;
+    border: 1px solid rgb(26, 169, 252);
+    color: red;
     background-color: red;
 }
-
-
 
 .node-visited {
     animation-name: visitedAnimation;

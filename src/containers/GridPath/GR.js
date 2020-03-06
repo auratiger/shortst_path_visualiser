@@ -12,10 +12,10 @@ import './GridPath.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, ButtonGroup, Card } from 'react-bootstrap';
 
-// const ROWS = 35;
-// const COLS = 92;
-const ROWS = Math.floor(window.innerHeight / 34);
-const COLS = Math.floor(window.innerWidth / 26);
+// const ROWS = 20;
+// const COLS = 30;
+let ROWS = Math.floor(window.innerHeight / 32);
+let COLS = Math.floor(window.innerWidth / 27);
 
 const GridPath = () => {
 
@@ -42,6 +42,9 @@ const GridPath = () => {
     const updateScreenSize = () => {
       setScreenWidth(window.innerWidth);
       setScreenHeight(window.innerHeight);
+      ROWS = Math.floor(window.innerHeight / 32);
+      COLS = Math.floor(window.innerWidth / 27);
+      setBoard(new Board(ROWS, COLS, setRerender));      
     }
 
     const resetBoard = () => {
@@ -58,13 +61,13 @@ const GridPath = () => {
     const runDijcstra = () => {
 
         dijstraAlgorithm(board).then((reachedEnd) => {
-          visualizePath(board.visualization, reachedEnd);
+          visualizePath(board.visualization, elRefs, reachedEnd);
         }); 
     }
 
     const runAStar = () => {
       aStar(board).then((reachedEnd) => {
-        visualizePath(board.visualization, reachedEnd);
+        visualizePath(board.visualization, elRefs, reachedEnd);
       })
     }
 
@@ -78,17 +81,19 @@ const GridPath = () => {
         let row = parseInt(id.substring(0, 2)); 
         let col = parseInt(id.substring(2));   
        
-        board.grid[row][col].wall = true;       
-        let index = row * COLS + col;
+        let node = board.grid[row][col];
+        
+        if(node.isStart || node.isEnd){
+          return;
+        }
+
+        node.wall = true;
+        let index = row * board.cols + col;
         elRefs[index].current.className = 'node wall';
-      }
+    }
 
     const onClickHandler = (event) => {
         event.preventDefault();
-
-        if(event.target.id === "element"){
-          return;
-        }
 
         colorChangeHandler(event.target.id);
 
@@ -98,7 +103,6 @@ const GridPath = () => {
     const onMouseRelease = (event) => {
         setMouseDown(false);
     }
-
 
     const onMouseHover = (event) => {
         if(!mouseDown){
@@ -113,30 +117,17 @@ const GridPath = () => {
     let grid = board !== null ? board.grid.map(row => {
       let cols = row.map(node => {
         
-        let element = () => {           
-
-          if(node.isStart){
-            return(
-              <div className={"start"} id="element"></div>
-            )
-          }else if(node.isEnd){
-            return(
-              <div className={"end"} id="element"></div>
-            )
-          }else {
-            return node.pathDistance;
-          }
-        }
-    
+        let cl = node.isStart ? "start" : node.isEnd ? "end" : "node";
+        
         return(
           <div id={node.id} 
                key={node.id} 
                ref={elRefs[r++]}
-               className={"node"}
+               className={cl}
                onMouseDown={onClickHandler}
                onMouseOver={onMouseHover}
                onMouseUp={onMouseRelease}>
-                 {element()}
+                 {node.pathDistance}
           </div>
         )
       })

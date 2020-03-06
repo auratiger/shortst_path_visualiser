@@ -77,11 +77,7 @@ export function aStar(board){
             let adjacentNodes = getAdjacentNodes(board.grid, curNode, closedSet);
 
             adjacentNodes.forEach(node => {
-                node.previusNode = curNode;  
                 board.visualization.push(curNode);              
-            })
-
-            adjacentNodes.forEach(node => {
 
                 let g = curNode.gScore + curNode.dir === 0 ? curNode.pathDistance : curNode.pathDistance * 1.2;
                 let h = calculateDistance(node, endNode);
@@ -89,16 +85,25 @@ export function aStar(board){
 
                 let q = openSet.filter(el => el.id === node.id);
                 if(q.length !== 0 && q[0].fScore < f){
+                    console.log(1);
+                    
                     return;
                 }
+                console.log(q);
+                
 
                 q = closedSet.filter(el => el.id === node.id);
                 if(q.length !== 0 && q[0].fScore < f){
+                    console.log(2);
+                    
                     return;
                 }
 
                 node.gScore = g;
                 node.fScore = f;
+
+                node.previusNode = curNode;  
+
                 openSet.push(node);
             })
 
